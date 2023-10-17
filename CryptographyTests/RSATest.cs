@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Policy;
 using System.Windows.Markup;
+using Cryptography.logic.Interfaces;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CryptographyTests
 {
@@ -20,12 +22,12 @@ namespace CryptographyTests
         {
             string openText = "test string";
             string encryptedData, decryptedData;
-
-            using (RSACryptoServiceProvider RSAProvaider = new RSACryptoServiceProvider())
-            {
-                encryptedData = Cryptography.logic.RSA.RSAEncrypt(openText, RSAProvaider.ExportParameters(false), false);
-                decryptedData = Cryptography.logic.RSA.RSADecrypt(encryptedData, RSAProvaider.ExportParameters(true), false);
-            }     
+            var a  =  new Cryptography.logic.RSA().RSAEncrypt(openText, false).Result;
+            string PublicKey = a.PublicKey;
+            string PrivateKey = a.PrivateKey;
+            string CipherText = a.cipherText;
+            decryptedData = new Cryptography.logic.RSA().RSADecrypt(CipherText, PrivateKey, false).Result;
+              
             Assert.AreEqual(openText, decryptedData);
         }
 

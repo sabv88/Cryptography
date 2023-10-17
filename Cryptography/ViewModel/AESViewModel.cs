@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Security.Policy;
+using Cryptography.logic.Interfaces;
 
 namespace Cryptography.ViewModel
 {
@@ -19,9 +21,8 @@ namespace Cryptography.ViewModel
         string key = string.Empty;
         string iv = string.Empty;
         string decryptedText = string.Empty;
-        Command decryptCommand;
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        public IAsyncCommand DecryptCommand { get; set; }
+        IAES AES;
 
         public string Key
         {
@@ -53,47 +54,52 @@ namespace Cryptography.ViewModel
             }
         }
 
-        public Command EncryptCommand
-        {
-            get
-            {
-                return encryptCommand ??
-                 (encryptCommand = new Command(obj =>
-                    {
-                        try
-                        {
-                            string localKey, localIv, localCipher;
-                            AES.AESEncrypt(openText, out localCipher, out localKey, out localIv);
-                            CipherText = localCipher;
-                            Key = localKey;
-                            IV = localIv;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                    }));
 
-            }
-        }
 
-        public Command DecryptCommand
+        public AESViewModel(IAES aES)
         {
-            get
+            AES = aES;
+            EncryptCommand = new AsyncCommand(async () =>
             {
-                return decryptCommand ??
-                  (decryptCommand = new Command(obj =>
-                  {
-                      try
-                      {
-                          DecryptedText = AES.AESDecrypt(CipherText, Key, IV);
-                      }
-                      catch (Exception ex)
-                      {
-                          MessageBox.Show(ex.Message);
-                      }
-                  }));
-            }
+                try
+                {
+
+                    Task<(string cipherText, string Key, string IV)> a = default;
+                    await Task.Run(() =>
+                        
+                     a =  AES.AESEncrypt(OpenText));
+
+                    CipherText = a.Result.cipherText;
+                    Key = a.Result.Key;
+                    IV = a.Result.IV;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+
+                }
+            });
+
+            DecryptCommand = new AsyncCommand(async () =>
+            {
+                try
+                {
+                    DecryptedText = await Task.Run(
+                        () => 
+                        
+                        AES.AESDecrypt(CipherText, Key, IV)
+                        
+                        
+                        );
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
+
+
+
         }
     }
 }

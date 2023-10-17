@@ -1,12 +1,6 @@
-﻿using Cryptography.logic;
-using System;
-using System.Collections.Generic;
+﻿using Cryptography.logic.Interfaces;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Cryptography.ViewModel
 {
@@ -14,7 +8,7 @@ namespace Cryptography.ViewModel
     {
         internal string openText = string.Empty;
         internal string cipherText = string.Empty;
-        internal Command encryptCommand;
+        public IAsyncCommand EncryptCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string OpenText

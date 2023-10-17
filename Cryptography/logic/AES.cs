@@ -2,17 +2,19 @@
 using System.Text;
 using System.Security.Cryptography;
 using System.IO;
-
+using System.Threading.Tasks;
+using Cryptography.logic.Interfaces;
 
 namespace Cryptography.logic
 {
-    public static class AES
+    public class AES : IAES
     {
-        public static void AESEncrypt(string openText, out string cipherText, out string Key, out string IV)
+        public async Task<(string cipherText, string Key, string IV)> AESEncrypt(string openText)
         {
             byte[] encrypted;
             byte[] iv;
             byte[] key;
+
             using (Aes myAes = Aes.Create())
             {
                 key = myAes.Key;
@@ -49,16 +51,18 @@ namespace Cryptography.logic
                 stringBuilderIV.Append(b).Append(" ");
             }
 
-            cipherText = stringBuilderEncoding.ToString().TrimEnd();
-            Key = stringBuilderKey.ToString().TrimEnd();
-            IV = stringBuilderIV.ToString().TrimEnd();
+            var cipherText = stringBuilderEncoding.ToString().TrimEnd();
+            var Key = stringBuilderKey.ToString().TrimEnd();
+            var IV = stringBuilderIV.ToString().TrimEnd();
+
+            return (cipherText, Key, IV);
+
         }
 
 
-        public static string AESDecrypt(string cipherText, string Key, string IV)
+        public async Task<string> AESDecrypt(string cipherText, string Key, string IV)
         {
-
-            string plaintext;
+            string plaintext = string.Empty;
          
                 var iv = Array.ConvertAll(IV.Split(" "), Byte.Parse);
                 var key = Array.ConvertAll(Key.Split(" "), Byte.Parse);
@@ -81,10 +85,6 @@ namespace Cryptography.logic
                 }
 
                 return plaintext;
-            
-           
-
-            return string.Empty;
         }
     }
 }

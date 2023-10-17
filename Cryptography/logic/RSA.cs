@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cryptography.logic.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -9,68 +10,59 @@ using System.Threading.Tasks;
 
 namespace Cryptography.logic
 {
-    public static class RSA
+    public class RSA : IRSA
     {
-        public static string RSAEncrypt(string openText, out string publicKey, out string privateKey, bool DoOAEPPadding)
+        public async Task<(string cipherText, string PublicKey, string PrivateKey)> RSAEncrypt(string openText, bool DoOAEPPadding)
         {
-                byte[] toEncryptData = Encoding.Unicode.GetBytes(openText);
-                List<byte> encrypted = new List<byte>();
-                using (RSACryptoServiceProvider RSA = new(1024))
+            string publicKey, privateKey;
+            byte[] toEncryptData = Encoding.Unicode.GetBytes(openText);
+            List<byte> encrypted = new List<byte>();
+            using (RSACryptoServiceProvider RSA = new(1024))
+            {
+                publicKey = RSA.ToXmlString(false);
+                privateKey = RSA.ToXmlString(true);
+
+                int encryptedDataIndex = 0;
+                for (int i = 117, j = 0; encryptedDataIndex < toEncryptData.Length - 128; i += 117)
                 {
-                     publicKey = RSA.ToXmlString(false);
-                    privateKey = RSA.ToXmlString(true);
-
-                    int encryptedDataIndex = 0;
-                    for (int i = 117, j = 0; encryptedDataIndex < toEncryptData.Length - 128; i += 117)
-                    {
-                        encrypted.AddRange(RSA.Encrypt(toEncryptData[j..i], DoOAEPPadding));
-                        encryptedDataIndex += 128;
-                        j = i;
-                    }
-                    encrypted.AddRange(RSA.Encrypt(toEncryptData[encryptedDataIndex..], DoOAEPPadding));
+                    encrypted.AddRange(RSA.Encrypt(toEncryptData[j..i], DoOAEPPadding));
+                    encryptedDataIndex += 128;
+                    j = i;
                 }
+                encrypted.AddRange(RSA.Encrypt(toEncryptData[encryptedDataIndex..], DoOAEPPadding));
+            }
 
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (byte b in encrypted)
+            {
+                stringBuilder.Append(b).Append(" ");
+            }
 
-
-                StringBuilder stringBuilder = new StringBuilder();
-                foreach (byte b in encrypted)
-                {
-                    stringBuilder.Append(b).Append(" ");
-                }
-
-                return stringBuilder.ToString().TrimEnd();
-
+            return ( stringBuilder.ToString().TrimEnd(), publicKey, privateKey);
         }
 
-        public static string RSADecrypt(string DataToDecrypt, string privateKey, bool DoOAEPPadding)
+        public async Task<string> RSADecrypt(string DataToDecrypt, string privateKey, bool DoOAEPPadding)
         {
 
-                byte[] bytes = Array.ConvertAll(DataToDecrypt.Split(" "), Byte.Parse);
-                List<byte> decrypted = new List<byte>();
+            byte[] bytes = Array.ConvertAll(DataToDecrypt.Split(" "), Byte.Parse);
+            List<byte> decrypted = new List<byte>();
 
-                //Create a new instance of RSACryptoServiceProvider.
-                using (RSACryptoServiceProvider RSA = new(1024))
+            using (RSACryptoServiceProvider RSA = new(1024))
+            {
+                RSA.FromXmlString(privateKey);
+                int decryptedDataIndex = 0;
+
+                for (int i = 128, j = 0; i < bytes.Length; i += 128)
                 {
-                    //Import the RSA Key information. This needs
-                    //to include the private key information.
-                    RSA.FromXmlString(privateKey);
-
-                    //Decrypt the passed byte array and specify OAEP padding.  
-                    //OAEP padding is only available on Microsoft Windows XP or
-                    //later.
-                    int decryptedDataIndex = 0;
-
-                    for (int i = 128, j = 0; i < bytes.Length; i += 128)
-                    {
-                        decrypted.AddRange(RSA.Decrypt(bytes[j..i], DoOAEPPadding));
-                        j = i;
-                        decryptedDataIndex += 117;
-                    }
-                    decrypted.AddRange(RSA.Decrypt(bytes[decryptedDataIndex..], DoOAEPPadding));
+                    decrypted.AddRange(RSA.Decrypt(bytes[j..i], DoOAEPPadding));
+                    j = i;
+                    decryptedDataIndex += 117;
                 }
+                decrypted.AddRange(RSA.Decrypt(bytes[decryptedDataIndex..], DoOAEPPadding));
+            }
 
-                return Encoding.Unicode.GetString(decrypted.ToArray());
-            
+            return Encoding.Unicode.GetString(decrypted.ToArray());
+
         }
 
 
@@ -105,7 +97,7 @@ namespace Cryptography.logic
                 RSAPKCS1SignatureDeformatter rsaDeformatter = new(rsa);
                 rsaDeformatter.SetHashAlgorithm(nameof(SHA256));
 
-               return rsaDeformatter.VerifySignature(hash, signedHash);           
+                return rsaDeformatter.VerifySignature(hash, signedHash);
             }
         }
     }

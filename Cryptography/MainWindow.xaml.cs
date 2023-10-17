@@ -1,4 +1,5 @@
 ﻿using Cryptography.logic;
+using Cryptography.logic.Interfaces;
 using Cryptography.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -22,12 +23,12 @@ namespace Cryptography
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(IAES aes, IRSA rsa, IHash hash)
         {
             InitializeComponent();
-            AESGrid.DataContext = new AESViewModel();
-            HashGrid.DataContext = new HashViewModel();
-            RSAGrid.DataContext = new RSAViewModel();
+            AESGrid.DataContext = new AESViewModel(aes);
+            HashGrid.DataContext = new HashViewModel(hash);
+            RSAGrid.DataContext = new RSAViewModel(rsa);
         }
     }
 }

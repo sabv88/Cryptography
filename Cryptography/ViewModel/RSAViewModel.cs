@@ -1,4 +1,5 @@
 ﻿using Cryptography.logic;
+using Cryptography.logic.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Cryptography.ViewModel
 {
@@ -14,8 +16,8 @@ namespace Cryptography.ViewModel
         string decrypted = string.Empty;
         string publicKey = string.Empty;
         string privateKey = string.Empty;
-
-        Command decryptCommand;
+        public IAsyncCommand DecryptCommand { get; set; }
+        IRSA RSA;
 
         public string PublicKey
         {
@@ -48,47 +50,41 @@ namespace Cryptography.ViewModel
             }
         }
 
-        public Command EncryptCommand
+       public RSAViewModel(IRSA rsa) 
         {
-            get
+
+            RSA = rsa;
+            EncryptCommand = new AsyncCommand(async () =>
             {
-                return encryptCommand ??
-                  (encryptCommand = new Command(obj =>
-                  {
-                  try
-                  {
-                      string pubKey, privKey;
-                          CipherText = Cryptography.logic.RSA.RSAEncrypt(openText, out pubKey, out privKey, false);
-                      PublicKey = pubKey;
-                      PrivateKey = privKey;
-                      }
-                      catch (Exception ex)
-                      {
-                          MessageBox.Show(ex.Message);
-                      }
-                  }));
-            }
-        }
+                try
+                {
+                    Task<(string cipherText, string PublicKey, string PrivateKey)> a = default;
+                    await Task.Run(() =>
+                    a = RSA.RSAEncrypt(openText, false));
+                    PublicKey = a.Result.PublicKey;
+                    PrivateKey = a.Result.PrivateKey;
+                    CipherText = a.Result.cipherText;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
 
-        public Command DecryptCommand
-        {
-            get
+            DecryptCommand = new AsyncCommand(async () =>
             {
-                return decryptCommand ??
-                  (decryptCommand = new Command(obj =>
-                  {
-                  try
-                  {
-                      Decrypted = Cryptography.logic.RSA.RSADecrypt(CipherText, privateKey, false);
-                      }
-                      catch (Exception ex)
-                      {
-                          MessageBox.Show(ex.Message);
-                      }
-                  }));
-            }
+                try
+                {
+                    Decrypted = await Task.Run(() =>
+                  RSA.RSADecrypt(CipherText, PrivateKey, false));
+                   
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
+
         }
-
-
     }
 }

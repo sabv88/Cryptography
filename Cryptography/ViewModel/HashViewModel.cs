@@ -1,12 +1,9 @@
 ﻿using Cryptography.logic;
+using Cryptography.logic.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using System.Windows;
 
 namespace Cryptography.ViewModel
 {
@@ -14,7 +11,8 @@ namespace Cryptography.ViewModel
     {
         string selected;
         public event PropertyChangedEventHandler PropertyChanged;
-        public Command getHash;
+        public IAsyncCommand GetHash { get; set; }
+        IHash Hash;
 
         public string Selected
         {
@@ -26,34 +24,41 @@ namespace Cryptography.ViewModel
             }
         }
 
-        public Command GetHash
+        public HashViewModel(IHash hash) 
         {
-            get
+            Hash = hash;
+            GetHash = new AsyncCommand(async () =>
             {
-                return getHash ??
-                  (getHash = new Command(obj =>
-                  {
-                    switch(obj as string)
-                      {
-                          case "MD5":
-                              CipherText = Hash.MD5(OpenText);
-                              break;
-                          case "SHA1":
-                              CipherText = Hash.SHA1(OpenText);
-                              break;
-                          case "SHA256":
-                              CipherText = Hash.SHA256(OpenText);
-                              break;
-                          case "SHA384":
-                              CipherText = Hash.SHA384(OpenText);
-                              break;
-                          case "SHA512":
-                              CipherText = Hash.SHA512(OpenText);
-                              break;
-                      }
+                try
+                {
+                    switch (Selected as string)
+                    {
+                        case "MD5":
+                            await Task.Run(async () =>
+                   CipherText = await Hash.MD5(OpenText));
+                            break;
+                        case "SHA1":
+                            await Task.Run(async () =>
+                   CipherText = await Hash.SHA1(OpenText));
+                            break;
+                        case "SHA256":
+                            await Task.Run(async () =>
+                   CipherText = await Hash.SHA256(OpenText));
+                            break;
+                        case "SHA384":
+                            await Task.Run(async () => CipherText = await Hash.SHA384(OpenText));
+                            break;
+                        case "SHA512":
+                            await Task.Run(async () => CipherText = await Hash.SHA512(OpenText));
+                            break;
+                    }                  
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
 
-                  }));
-            }
+                }
+            });
         }
     }
 }
