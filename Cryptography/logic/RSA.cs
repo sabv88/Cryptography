@@ -64,41 +64,5 @@ namespace Cryptography.logic
             return Encoding.Unicode.GetString(decrypted.ToArray());
 
         }
-
-        // TODO: RSACreateSignature
-        public static byte[] RSACreateSignature(string DataToDecrypt, out RSAParameters sharedParameters)
-        {
-            using SHA256 alg = SHA256.Create();
-
-            byte[] data = Encoding.ASCII.GetBytes(DataToDecrypt);
-            byte[] hash = alg.ComputeHash(data);
-
-            byte[] signedHash;
-
-            using (System.Security.Cryptography.RSA rsa = System.Security.Cryptography.RSA.Create())
-            {
-                sharedParameters = rsa.ExportParameters(false);
-
-                RSAPKCS1SignatureFormatter rsaFormatter = new(rsa);
-                rsaFormatter.SetHashAlgorithm(nameof(SHA256));
-
-                signedHash = rsaFormatter.CreateSignature(hash);
-            }
-
-            return signedHash;
-        }
-
-        public static bool RSAVerifySignature(byte[] hash, RSAParameters sharedParameters, byte[] signedHash)
-        {
-            using (System.Security.Cryptography.RSA rsa = System.Security.Cryptography.RSA.Create())
-            {
-                rsa.ImportParameters(sharedParameters);
-
-                RSAPKCS1SignatureDeformatter rsaDeformatter = new(rsa);
-                rsaDeformatter.SetHashAlgorithm(nameof(SHA256));
-
-                return rsaDeformatter.VerifySignature(hash, signedHash);
-            }
-        }
     }
 }
