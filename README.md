@@ -1,6 +1,6 @@
 
 ## About
-ENG
+**ENG**
 
 Simple work for the university on the topic "Cryptography". 
 There are many different encryption algorithms that could be implemented in the work, but there was no desire to implement <strike>useless</strike>, outdated algorithms. 
@@ -11,7 +11,7 @@ Also, in addition to AES and RSA, there was a desire to study and implement:
 - practice in Object-Oriented programming 
 - practice in asynchrony
 ____
-RU
+**RU**
 
 Курсовая работа для университета на тему «Криптография».  Никаких требований для проекта, кроме предпочтительного языка и формата, а именно настольного приложения, предъявлено не было, поэтому, его содержание определялось автором. 
 Существует множество различных алгоритмов шифрования, которые можно было реализовать в работе, но реализовывать <strike>бесполезные</strike> устаревшие и неиспользуемые в настоящих проектах алгоритмы, желания не было, т.к. изучены они были в лабораторных работах. 
@@ -22,30 +22,32 @@ RU
 
 ### Methods:
 #### AES
-ENG
+**ENG**
 - **-** **`AES.AESEncrypt(string openText)`** **`Task<(string cipherText, string Key, string IV)>`** -  Encrypts data with AES algorithm.
 - **-** **`AES.AESDecrypt(string cipherText, string Key, string IV)`** **`Task<string>`** - Decrypts data with AES algorithm.
-___
-RU
+
+**RU**
 - **-** **`AES.AESEncrypt(string openText)`** **`Task<(string cipherText, string Key, string IV)>`** - Шифрует открытый текст алгоритмом AES, возвращает зашифрованый текст, сгенерированый ключ и вектор инициализации.
 - **-** **`AES.AESDecrypt(string cipherText, string Key, string IV)`** **`Task<string>`** - Расшифровывает алгоритмом AES шифр-текст, возвращает расшифрованный текст.
+___
 #### RSA
-ENG
+**ENG**
 - **-** **`RSA.RSAEncrypt(string openText, bool DoOAEPPadding)`** **`Task<(string cipherText, string PublicKey, string PrivateKey)>`** - Encrypts data with RSA algorithm.
 - **-** **`RSA.RSADecrypt(string DataToDecrypt, string privateKey, bool DoOAEPPadding)`** **`Task<string>`** - Decrypts data with RSA algorithm.
-___
-RU
+
+**RU**
 - **-** **`RSA.RSAEncrypt(string openText, bool DoOAEPPadding)`** **`Task<(string cipherText, string PublicKey, string PrivateKey)>`** - Шифрует открытый текст алгоритмом RSA, возвращает зашифрованый текст, открытый и закрытый ключ.
 - **-** **`RSA.RSADecrypt(string DataToDecrypt, string privateKey, bool DoOAEPPadding)`** **`Task<string>`** - Расшифровывает алгоритмом RSA шифр-текст, возвращает расшифрованный текст.
+___
 #### Hash
-ENG
+**ENG**
 - **-** **`Hash.SHA1(string data)`** **`Task<string>`** - Computes the hash of data using SHA1 algorithm.
 - **-** **`Hash.SHA256(string data)`** **`Task<string>`** - Computes the hash of data using SHA256 algorithm.
 - **-** **`Hash.SHA384(string data)`** **`Task<string>`** - Computes the hash of data using SHA384 algorithm.
 - **-** **`Hash.SHA512(string data)`** **`Task<string>`** - Computes the hash of data using SHA512 algorithm.
 - **-** **`Hash.MD5(string data)`** **`Task<string>`** - Computes the hash of data using MD5 algorithm.
-___
-RU
+
+**RU**
 - **-** **`Hash.SHA1(string data)`** **`Task<string>`** - Возвращает хэш, вычисленный алгоритмом SHA1.
 - **-** **`Hash.SHA256(string data)`** **`Task<string>`** - Возвращает хэш, вычисленный алгоритмом SHA256.
 - **-** **`Hash.SHA384(string data)`** **`Task<string>`** - Возвращает хэш, вычисленный алгоритмом SHA384.
