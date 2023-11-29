@@ -16,7 +16,7 @@ using Cryptography.logic.Interfaces;
 
 namespace Cryptography.ViewModel
 {
-    internal class AESViewModel : BaseViewModel
+    internal class AESViewModel : BaseViewModel, IAESViewModel
     {
         string key = string.Empty;
         string iv = string.Empty;

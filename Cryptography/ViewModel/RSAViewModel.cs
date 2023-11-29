@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Cryptography.ViewModel
 {
-    class RSAViewModel : BaseViewModel
+    class RSAViewModel : BaseViewModel, IRSAViewModel
     {
         string decrypted = string.Empty;
         string publicKey = string.Empty;

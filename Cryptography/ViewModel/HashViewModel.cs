@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Cryptography.ViewModel
 {
-    class HashViewModel : BaseViewModel
+    class HashViewModel : BaseViewModel, IHashViewModel
     {
         string selected;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,7 +31,7 @@ namespace Cryptography.ViewModel
             {
                 try
                 {
-                    switch (Selected as string)
+                    switch (Selected)
                     {
                         case "MD5":
                             await Task.Run(async () =>

@@ -23,12 +23,12 @@ namespace Cryptography
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(IAES aes, IRSA rsa, IHash hash)
+        public MainWindow(IAESViewModel aes, IRSAViewModel rsa, IHashViewModel hash)
         {
             InitializeComponent();
-            AESGrid.DataContext = new AESViewModel(aes);
-            HashGrid.DataContext = new HashViewModel(hash);
-            RSAGrid.DataContext = new RSAViewModel(rsa);
+            AESGrid.DataContext = aes;
+            HashGrid.DataContext = hash;
+            RSAGrid.DataContext = rsa;
         }
     }
 }

@@ -41,7 +41,7 @@
                     <TextBox  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch" TextAlignment="Center" Text="{Binding DecryptedText}"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="RSA">
+            <TabItem Header="RSA" DataContext="{Binding RSAViewModel}">
                 <Grid x:Name="RSAGrid"  Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -76,7 +76,7 @@
             </TabItem>
 
             <TabItem Header="Hash">
-                <Grid Background="#FFE5E5E5" x:Name="HashGrid">
+                <Grid Background="#FFE5E5E5" x:Name="HashGrid" DataContext="{Binding HashViewModel}">
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>

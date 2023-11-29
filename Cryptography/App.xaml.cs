@@ -1,5 +1,6 @@
 ﻿using Cryptography.logic;
 using Cryptography.logic.Interfaces;
+using Cryptography.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -32,6 +33,9 @@ namespace Cryptography
                 services.AddSingleton<IAES, AES>();
                 services.AddSingleton<IRSA, RSA>();
                 services.AddSingleton<IHash, Hash>();
+                services.AddSingleton<IAESViewModel, AESViewModel>();
+                services.AddSingleton<IRSAViewModel, RSAViewModel>();
+                services.AddSingleton<IHashViewModel, HashViewModel>();
             })
             .Build();
         }

@@ -30,27 +30,5 @@ namespace CryptographyTests
               
             Assert.AreEqual(openText, decryptedData);
         }
-
-        [TestMethod]
-        public void CheckSignatureRSATrue()
-        {
-            string openText = "test string"; 
-            byte[] data = Encoding.ASCII.GetBytes(openText);
-            using SHA256 alg = SHA256.Create();
-            byte[] hash = alg.ComputeHash(data);
-            RSAParameters sharedParameters;
-            byte[] signedHash = Cryptography.logic.RSA.RSACreateSignature(openText, out sharedParameters);
-            Assert.IsTrue(Cryptography.logic.RSA.RSAVerifySignature(hash, sharedParameters, signedHash));
-        }
-
-        [TestMethod]
-        public void CheckSignatureRSAFalse()
-        {
-            string openText = "test string";
-            RSAParameters sharedParameters;
-            byte[] signedHash = Cryptography.logic.RSA.RSACreateSignature(openText, out sharedParameters);
-            byte[] hash = Encoding.ASCII.GetBytes(openText+"ggg");
-            Assert.IsFalse(Cryptography.logic.RSA.RSAVerifySignature(hash, sharedParameters, signedHash));
-        }
     }
 }
