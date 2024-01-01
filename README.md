@@ -1,6 +1,10 @@
+# Cryptography
+
+![image](https://github.com/sabv88/Cryptography/assets/111075613/b4d409de-6a88-4a65-8d53-58a9df3f2ac0)
 
 ## About
 **ENG**
+
 
 Simple work for the university on the topic "Cryptography". 
 There are many different encryption algorithms that could be implemented in the work, but there was no desire to implement <strike>useless</strike>, outdated algorithms. 
